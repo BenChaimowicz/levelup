@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn } from "typeorm";
+import { Entity, Column, PrimaryGeneratedColumn, BeforeInsert } from "typeorm";
 
 
 @Entity()
@@ -6,27 +6,28 @@ export class User {
     @PrimaryGeneratedColumn('uuid')
     id: string;
 
-    @Column()
+    @Column('text')
     userName: string;
 
-    @Column()
+    @Column('text')
     firstName: string;
 
-    @Column()
+    @Column('text')
     lastName: string;
 
-    @Column()
+    @Column('text', { unique: true })
     email: string;
 
     @Column()
     password: string;
 
-    @Column('timestamp with time zone')
-    dateOfBirth: Date;
+    @Column('timestamp with time zone', { nullable: true })
+    dateOfBirth?: Date;
 
     @Column('timestamp with time zone')
-    created: Date;
+    createdAt: Date;
 
     @Column()
     active: boolean;
+
 }
