@@ -12,7 +12,7 @@ export class UsersService {
         private userRepository: Repository<User>
     ) { }
 
-    async findAll() {
+    async findAll(): Promise<User[]> {
         return this.userRepository.find();
     }
 
@@ -26,15 +26,36 @@ export class UsersService {
 
         return user;
     }
+
     async create(userDto: CreateUserDTO): Promise<User> {
         let newUser: User;
-        newUser.active = true;
-        newUser.createdAt = new Date();
         try {
+            newUser.active = true;
+            newUser.createdAt = new Date();
             newUser.password = await bcrypt.hashSync(userDto.password, 8);
             return await this.userRepository.save(newUser);
         } catch (err) {
             throw new BadRequestException(err);
+        }
+    }
+
+    async update(id: string, updateUser: DeepPartial<User>): Promise<User> {
+        try {
+            const userToUpdate: User = await this.userRepository.findOne({ id });
+            const updatedUser = await this.userRepository.save({ ...userToUpdate, ...updateUser });
+            return updatedUser;
+        } catch (err) {
+            throw new NotFoundException();
+        }
+    }
+
+    async delete(userPart: DeepPartial<User>) {
+        let user = await this.userRepository.findOne(userPart);
+        try {
+            await this.userRepository.remove(user);
+            return user;
+        } catch (err) {
+            throw new NotFoundException();
         }
     }
 }
