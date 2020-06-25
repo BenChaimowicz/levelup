@@ -10,6 +10,7 @@ import { PassportModule } from '@nestjs/passport';
 import { ConfigModule } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { JwtStrategy } from './auth/strategies/jwt.strategy';
+import { AuthController } from './auth/auth.controller';
 
 @Module({
   imports: [
@@ -37,7 +38,7 @@ import { JwtStrategy } from './auth/strategies/jwt.strategy';
       session: false
     }),
   ],
-  controllers: [AppController, UsersController],
+  controllers: [AppController, UsersController, AuthController],
   providers: [AppService, UsersService, AuthService, JwtStrategy],
 })
 export class AppModule {

@@ -14,11 +14,13 @@ export class UsersController {
         private authService: AuthService
     ) { }
 
+    @UseGuards(AuthGuard('jwt'))
     @Get()
     async all(): Promise<GetUserDTO[]> {
         return (await this.usersService.findAll()).map(user => new GetUserDTO(user));
     }
 
+    @UseGuards(AuthGuard('jwt'))
     @Get(':id')
     async one(@Param('id') id): Promise<GetUserDTO> {
         const user = await this.usersService.findOne({ id });
@@ -31,18 +33,14 @@ export class UsersController {
         return new GetUserDTO(newUser);
     }
 
-    @UseGuards(AuthGuard('local'))
-    @Post('login')
-    async login(@Request() req) {
-        return req.user;
-    }
-
+    @UseGuards(AuthGuard('jwt'))
     @Put(':id')
     async update(@Param('id') id: string, @Body() user: UpdateUserDTO): Promise<GetUserDTO> {
         let updatedUser = await this.usersService.update(id, user);
         return new GetUserDTO(updatedUser);
     }
 
+    @UseGuards(AuthGuard('jwt'))
     @Delete(':id')
     async delete(@Param('id') id: string): Promise<GetUserDTO> {
         const deletedUser = await this.usersService.delete({ id });

@@ -16,6 +16,7 @@ export class AuthService {
 
     async validateUser(tokenPayload: TokenPayload) {
         const user = await this.userService.findOne(tokenPayload);
+        console.log('validateUser:', user);
         if (!user) throw new UnauthorizedException();
         return user;
     }
