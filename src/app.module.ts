@@ -5,9 +5,17 @@ import { AppService } from './app.service';
 import { UsersController } from './users/users.controller';
 import { UsersService } from './users/users.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { AuthService } from './auth/auth.service';
+import { PassportModule } from '@nestjs/passport';
+import { ConfigModule } from '@nestjs/config';
+import { JwtModule } from '@nestjs/jwt';
+import { JwtStrategy } from './auth/strategies/jwt.strategy';
 
 @Module({
   imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: 'localhost',
@@ -17,9 +25,20 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       database: 'postgres',
       entities: [User],
       synchronize: true
-    }), TypeOrmModule.forFeature([User])
+    }), TypeOrmModule.forFeature([User]),
+    JwtModule.register({
+      secret: process.env.SECRET,
+      signOptions: {
+        expiresIn: 3600
+      }
+    }),
+    PassportModule.register({
+      defaultStrategy: 'jwt',
+      session: false
+    }),
   ],
   controllers: [AppController, UsersController],
-  providers: [AppService, UsersService],
+  providers: [AppService, UsersService, AuthService, JwtStrategy],
 })
-export class AppModule { }
+export class AppModule {
+}
