@@ -13,7 +13,7 @@ export class UsersService {
     ) { }
 
     async findAll(): Promise<User[]> {
-        return this.userRepository.find();
+        return await this.userRepository.find();
     }
 
     async findOne(u: DeepPartial<User>): Promise<User> {
@@ -28,13 +28,18 @@ export class UsersService {
     }
 
     async create(userDto: CreateUserDTO): Promise<User> {
-        let newUser: User;
+        let newUser: User = new User();
         try {
+            newUser.userName = userDto.userName;
+            newUser.firstName = userDto.firstName;
+            newUser.lastName = userDto.lastName;
+            newUser.email = userDto.email;
             newUser.active = true;
             newUser.createdAt = new Date();
             newUser.password = await bcrypt.hashSync(userDto.password, 8);
             return await this.userRepository.save(newUser);
         } catch (err) {
+            console.error(err);
             throw new BadRequestException(err);
         }
     }

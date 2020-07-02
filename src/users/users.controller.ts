@@ -1,6 +1,5 @@
-import { AuthService } from './../auth/auth.service';
 import { UpdateUserDTO } from './dto/update-user.dto';
-import { Controller, Get, Post, Param, Patch, Delete, Put, Body, UseGuards, Request } from '@nestjs/common';
+import { Controller, Get, Post, Param, Patch, Delete, Put, Body, UseGuards } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDTO } from './dto/create-user.dto';
 import { GetUserDTO } from './dto/get-user.dto';
@@ -11,7 +10,6 @@ export class UsersController {
 
     constructor(
         private usersService: UsersService,
-        private authService: AuthService
     ) { }
 
     @UseGuards(AuthGuard('jwt'))
